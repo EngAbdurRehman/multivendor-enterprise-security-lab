@@ -1,0 +1,84 @@
+<switch A>display current-configuration 
+!Software Version V200R005C10SPC607B607
+!Last configuration was updated at 2026-09-22 08:47:30+00:00 by SYSTEM automatically
+!Last configuration was saved at 2026-09-21 10:20:17+00:00
+#
+sysname switch A
+#
+device board 17 board-type CE-MPUB
+device board 1 board-type CE-LPUE
+#
+vlan batch 20
+#
+vlan 20
+ description FA-PA
+#
+aaa
+ #
+ authentication-scheme default
+ #
+ authorization-scheme default
+ #
+ accounting-scheme default
+ #
+ domain default
+ #              
+ domain default_admin
+#
+interface MEth0/0/0
+ undo shutdown
+#
+interface GE1/0/0
+ undo shutdown
+ port default vlan 20
+ stp disable
+#
+interface GE1/0/1
+ undo shutdown
+ port default vlan 20
+ stp disable
+#
+interface GE1/0/2
+ undo shutdown
+ port default vlan 20
+ stp disable
+#
+interface GE1/0/3
+ undo shutdown
+ port default vlan 20
+#
+interface GE1/0/4
+ undo shutdown
+#
+interface GE1/0/5
+ undo shutdown
+#
+interface GE1/0/6
+ undo shutdown
+#
+interface GE1/0/7
+ undo shutdown
+#
+interface GE1/0/8
+ undo shutdown
+#
+interface GE1/0/9
+ undo shutdown
+#
+interface NULL0
+#
+ssh authorization-type default aaa
+#               
+ssh server cipher aes256_gcm aes128_gcm aes256_ctr aes192_ctr aes128_ctr aes256_cbc aes128_cbc 3des_cbc
+#
+ssh server dh-exchange min-len 1024
+#
+ssh client cipher aes256_gcm aes128_gcm aes256_ctr aes192_ctr aes128_ctr aes256_cbc aes128_cbc 3des_cbc
+#
+user-interface con 0
+#
+port-group ty
+#
+vm-manager
+#
+return
