@@ -1,0 +1,243 @@
+admin@PA-FW-01(active)> set cli config-output-format set
+admin@PA-FW-01(active)> configure
+Entering configuration mode
+[edit]
+admin@PA-FW-01(active)# show network interface ethernet
+set network interface ethernet ethernet1/1 layer3 ipv6 neighbor-discovery router-advertisement enable no
+set network interface ethernet ethernet1/1 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/1 layer3 ip 192.168.10.1/24
+set network interface ethernet ethernet1/1 layer3 interface-management-profile Test
+set network interface ethernet ethernet1/1 layer3 lldp enable no
+set network interface ethernet ethernet1/2 layer3 ipv6 neighbor-discovery router-advertisement enable no
+set network interface ethernet ethernet1/2 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/2 layer3 ip 10.10.10.1/30
+set network interface ethernet ethernet1/2 layer3 interface-management-profile Test
+set network interface ethernet ethernet1/2 layer3 lldp enable no
+set network interface ethernet ethernet1/3 layer3 ipv6 neighbor-discovery router-advertisement enable no
+set network interface ethernet ethernet1/3 layer3 ndp-proxy enabled no
+set network interface ethernet ethernet1/3 layer3 ip 10.10.20.1/30
+set network interface ethernet ethernet1/3 layer3 interface-management-profile Test
+set network interface ethernet ethernet1/3 layer3 lldp enable no
+set network interface ethernet ethernet1/4 ha
+set network interface ethernet ethernet1/4 link-state auto
+set network interface ethernet ethernet1/5 ha
+set network interface ethernet ethernet1/5 link-state auto
+[edit]
+admin@PA-FW-01(active)# show network ike gateway
+set network ike gateway VPN1 authentication pre-shared-key key -AQ==X2gkBkcY5gqTZRMlNZzzLrLY+o0=slo6ieopCjFJA9FJGPlZog==
+set network ike gateway VPN1 protocol ikev1 dpd enable yes
+set network ike gateway VPN1 protocol ikev2 dpd enable yes
+set network ike gateway VPN1 protocol ikev2 ike-crypto-profile VPN
+set network ike gateway VPN1 protocol version ikev2
+set network ike gateway VPN1 local-address ip 10.10.10.1/30
+set network ike gateway VPN1 local-address interface ethernet1/2
+set network ike gateway VPN1 protocol-common nat-traversal enable no
+set network ike gateway VPN1 protocol-common fragmentation enable no
+set network ike gateway VPN1 peer-address ip 10.10.10.2
+set network ike gateway VPN2 authentication pre-shared-key key -AQ==X2gkBkcY5gqTZRMlNZzzLrLY+o0=slo6ieopCjFJA9FJGPlZog==
+set network ike gateway VPN2 protocol ikev1 dpd enable yes
+set network ike gateway VPN2 protocol ikev2 dpd enable yes
+set network ike gateway VPN2 protocol ikev2 ike-crypto-profile VPN
+set network ike gateway VPN2 protocol version ikev2
+set network ike gateway VPN2 local-address ip 10.10.20.1/30
+set network ike gateway VPN2 local-address interface ethernet1/3
+set network ike gateway VPN2 protocol-common nat-traversal enable no
+set network ike gateway VPN2 protocol-common fragmentation enable no
+set network ike gateway VPN2 peer-address ip 10.10.20.2
+[edit]
+admin@PA-FW-01(active)# show network tunnel ipsec
+set network tunnel ipsec VPN1 auto-key ike-gateway VPN1
+set network tunnel ipsec VPN1 auto-key ipsec-crypto-profile VPN1
+set network tunnel ipsec VPN1 tunnel-monitor enable no
+set network tunnel ipsec VPN1 tunnel-interface tunnel.1
+set network tunnel ipsec SRXVPN auto-key ike-gateway VPN2
+set network tunnel ipsec SRXVPN auto-key ipsec-crypto-profile VPN1
+set network tunnel ipsec SRXVPN tunnel-monitor enable no
+set network tunnel ipsec SRXVPN tunnel-interface tunnel.2
+[edit]
+admin@PA-FW-01(active)# show network interface tunnel
+set network interface tunnel units tunnel.1 ip 172.24.10.1/30
+set network interface tunnel units tunnel.1 interface-management-profile Test
+set network interface tunnel units tunnel.2 ip 172.16.1.1/30
+set network interface tunnel units tunnel.2 interface-management-profile Test
+set network interface tunnel units tunnel.2 comment srx
+[edit]
+admin@PA-FW-01(active)# show network virtual-router
+set network virtual-router default protocol bgp enable yes
+set network virtual-router default protocol bgp dampening-profile default cutoff 1.25
+set network virtual-router default protocol bgp dampening-profile default reuse 0.5
+set network virtual-router default protocol bgp dampening-profile default max-hold-time 900
+set network virtual-router default protocol bgp dampening-profile default decay-half-life-reachable 300
+set network virtual-router default protocol bgp dampening-profile default decay-half-life-unreachable 900
+set network virtual-router default protocol bgp dampening-profile default enable yes
+set network virtual-router default protocol bgp routing-options graceful-restart enable yes
+set network virtual-router default protocol bgp routing-options med always-compare-med no
+set network virtual-router default protocol bgp routing-options med deterministic-med-comparison no
+set network virtual-router default protocol bgp policy export rules lan action allow update as-path none
+set network virtual-router default protocol bgp policy export rules lan action allow update community none
+set network virtual-router default protocol bgp policy export rules lan action allow update extended-community none
+set network virtual-router default protocol bgp policy export rules lan action allow update origin igp
+set network virtual-router default protocol bgp policy export rules lan match address-prefix 192.168.10.0/24 exact no
+set network virtual-router default protocol bgp policy export rules lan match route-table unicast
+set network virtual-router default protocol bgp policy export rules lan used-by FGT-Peer
+set network virtual-router default protocol bgp policy export rules lan enable yes
+set network virtual-router default protocol bgp peer-group FGT-Peer type ebgp remove-private-as no
+set network virtual-router default protocol bgp peer-group FGT-Peer type ebgp import-nexthop original
+set network virtual-router default protocol bgp peer-group FGT-Peer type ebgp export-nexthop use-self
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options incoming-bgp-connection r
+emote-port 0
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options incoming-bgp-connection a
+llow yes
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options outgoing-bgp-connection l
+ocal-port 0
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options outgoing-bgp-connection a
+llow yes
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options multihop 0
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options keep-alive-interval 30
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options open-delay-time 0
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options hold-time 90
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options idle-hold-time 15
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer connection-options min-route-adv-interval 30
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer subsequent-address-family-identifier unicast
+ yes
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer subsequent-address-family-identifier multica
+st no
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer local-address ip 172.24.10.1/30
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer local-address interface tunnel.1
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer peer-address ip 172.24.10.2
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer bfd profile Inherit-vr-global-setting
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer max-prefixes 5000
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer enable yes
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer peer-as 65000
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer enable-mp-bgp no
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer address-family-identifier ipv4
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer enable-sender-side-loop-detection yes
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer reflector-client non-client
+set network virtual-router default protocol bgp peer-group FGT-Peer peer fgt-peer peering-type unspecified
+set network virtual-router default protocol bgp peer-group FGT-Peer aggregated-confed-as-path yes
+set network virtual-router default protocol bgp peer-group FGT-Peer soft-reset-with-stored-info no
+set network virtual-router default protocol bgp peer-group FGT-Peer enable yes
+set network virtual-router default protocol bgp peer-group srx type ebgp remove-private-as no
+set network virtual-router default protocol bgp peer-group srx type ebgp import-nexthop original
+set network virtual-router default protocol bgp peer-group srx type ebgp export-nexthop use-self
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options incoming-bgp-connection remote
+-port 0
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options incoming-bgp-connection allow
+yes
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options outgoing-bgp-connection local-
+port 0
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options outgoing-bgp-connection allow
+yes
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options multihop 0
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options keep-alive-interval 30
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options open-delay-time 0
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options hold-time 90
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options idle-hold-time 15
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer connection-options min-route-adv-interval 30
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer subsequent-address-family-identifier unicast yes
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer subsequent-address-family-identifier multicast no
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer local-address ip 172.16.1.1/30
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer local-address interface tunnel.2
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer peer-address ip 172.16.1.2
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer bfd profile Inherit-vr-global-setting
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer max-prefixes 5000
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer enable yes
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer peer-as 65003
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer enable-mp-bgp no
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer address-family-identifier ipv4
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer enable-sender-side-loop-detection yes
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer reflector-client non-client
+set network virtual-router default protocol bgp peer-group srx peer SRX-peer peering-type unspecified
+set network virtual-router default protocol bgp peer-group srx aggregated-confed-as-path yes
+set network virtual-router default protocol bgp peer-group srx soft-reset-with-stored-info no
+set network virtual-router default protocol bgp peer-group srx enable yes
+set network virtual-router default protocol bgp reject-default-route no
+set network virtual-router default protocol bgp router-id 1.1.1.1
+set network virtual-router default protocol bgp local-as 65001
+set network virtual-router default protocol bgp install-route yes
+set network virtual-router default protocol bgp redist-rules LAN address-family-identifier ipv4
+set network virtual-router default protocol bgp redist-rules LAN route-table unicast
+set network virtual-router default protocol bgp redist-rules LAN enable yes
+set network virtual-router default protocol bgp redist-rules LAN set-origin incomplete
+set network virtual-router default protocol rip enable no
+set network virtual-router default protocol ospf enable no
+set network virtual-router default protocol ospf global-bfd profile None
+set network virtual-router default protocol ospf reject-default-route no
+set network virtual-router default protocol ospfv3 enable no
+set network virtual-router default protocol redist-profile LAN filter type connect
+set network virtual-router default protocol redist-profile LAN filter interface ethernet1/1
+set network virtual-router default protocol redist-profile LAN priority 1
+set network virtual-router default protocol redist-profile LAN action redist
+set network virtual-router default interface [ ethernet1/1 ethernet1/2 ethernet1/3 tunnel.1 tunnel.2 ]
+set network virtual-router default ecmp algorithm ip-modulo
+set network virtual-router default ecmp enable no
+set network virtual-router default routing-table ip static-route test bfd profile None
+set network virtual-router default routing-table ip static-route test path-monitor enable no
+set network virtual-router default routing-table ip static-route test path-monitor failure-condition any
+set network virtual-router default routing-table ip static-route test path-monitor hold-time 2
+set network virtual-router default routing-table ip static-route test interface tunnel.1
+set network virtual-router default routing-table ip static-route test metric 10
+set network virtual-router default routing-table ip static-route test destination 192.168.20.0/24
+set network virtual-router default routing-table ip static-route test route-table unicast
+[edit]
+admin@PA-FW-01(active)# show deviceconfig high-availability
+set deviceconfig high-availability group group-id 1
+set deviceconfig high-availability group peer-ip 10.1.1.2
+set deviceconfig high-availability group election-option device-priority 50
+set deviceconfig high-availability group election-option timers recommended
+set deviceconfig high-availability group election-option heartbeat-backup yes
+set deviceconfig high-availability group election-option preemptive yes
+set deviceconfig high-availability group mode active-passive passive-link-state auto
+set deviceconfig high-availability group monitoring link-monitoring link-group test interface [ ethernet1/1 ethernet1/2 ethern
+et1/3 ethernet1/4 ethernet1/5 ]
+set deviceconfig high-availability interface ha1 port ethernet1/4
+set deviceconfig high-availability interface ha1 ip-address 10.1.1.1
+set deviceconfig high-availability interface ha1 netmask 255.255.255.252
+set deviceconfig high-availability interface ha1-backup
+set deviceconfig high-availability interface ha2 port ethernet1/5
+set deviceconfig high-availability interface ha2 ip-address 10.2.2.1
+set deviceconfig high-availability interface ha2 netmask 255.255.255.252
+set deviceconfig high-availability enabled yes
+[edit]
+admin@PA-FW-01(active)# show zone
+set zone Trust network layer3 ethernet1/1
+set zone Untrust network layer3 [ ethernet1/2 ethernet1/3 ]
+set zone VPN network layer3 [ tunnel.1 tunnel.2 ]
+[edit]
+admin@PA-FW-01(active)# show rulebase security
+set rulebase security rules any-any to any
+set rulebase security rules any-any from any
+set rulebase security rules any-any source any
+set rulebase security rules any-any destination any
+set rulebase security rules any-any source-user any
+set rulebase security rules any-any category any
+set rulebase security rules any-any application any
+set rulebase security rules any-any service any
+set rulebase security rules any-any hip-profiles any
+set rulebase security rules any-any action allow
+set rulebase security rules any-any disabled no
+set rulebase security rules trust-vpn to VPN
+set rulebase security rules trust-vpn from Trust
+set rulebase security rules trust-vpn source any
+set rulebase security rules trust-vpn destination any
+set rulebase security rules trust-vpn source-user any
+set rulebase security rules trust-vpn category any
+set rulebase security rules trust-vpn application any
+set rulebase security rules trust-vpn service any
+set rulebase security rules trust-vpn hip-profiles any
+set rulebase security rules trust-vpn action allow
+set rulebase security rules vpn-trust to Trust
+set rulebase security rules vpn-trust from VPN
+set rulebase security rules vpn-trust source any
+set rulebase security rules vpn-trust destination any
+set rulebase security rules vpn-trust source-user any
+set rulebase security rules vpn-trust category any
+set rulebase security rules vpn-trust application any
+set rulebase security rules vpn-trust service any
+set rulebase security rules vpn-trust hip-profiles any
+set rulebase security rules vpn-trust action allow
+[edit]
+admin@PA-FW-01(active)# exit
+Exiting configuration mode
+admin@PA-FW-01(active)>
+admin@PA-FW-01(active)>
